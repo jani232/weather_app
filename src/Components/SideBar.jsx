@@ -1,6 +1,7 @@
 // Sidebar.jsx
 import React from 'react';
 import { FaCloudSun, FaThLarge, FaChartLine, FaMapPin, FaBell, FaUser, FaCog } from 'react-icons/fa';
+import {Link} from 'react-router-dom'
 
 const Sidebar = () => {
   return (
@@ -9,14 +10,12 @@ const Sidebar = () => {
         <FaCloudSun />
       </div>
       <div className="nav-icons">
-        <a href="#" className="active"><FaThLarge /></a>
+             
+        <Link to="/"><FaThLarge /></Link>
         <a href="#"><FaChartLine /></a>
-        <a href="#"><FaMapPin /></a>
+        <Link to="/Map"><FaMapPin /></Link>
         <a href="#"><FaBell /></a>
         <a href="#"><FaUser /></a>
-      </div>
-      <div className="bottom-icon">
-        <FaCog />
       </div>
     </aside>
   );
