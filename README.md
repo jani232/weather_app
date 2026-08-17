@@ -1,0 +1,1 @@
+https://openweathermap.org/api/current?collection=current_forecast   ======           open weather doc file

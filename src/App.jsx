@@ -12,6 +12,7 @@ import "leaflet/dist/leaflet.css";
 import Tempeture from "./Pages/Tempeture";
 import Wind from "./Pages/Wind";
 import Humidity from "./Pages/Humidity";
+import Visibility from "./Pages/Visibility";
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
             <Route path="/Tempeture" element={<Tempeture/>} />
             <Route path="/Wind" element={<Wind/>} />
             <Route path="/Humidity" element={<Humidity/>} />
+            <Route path="/Visibility" element={<Visibility/>} />
           </Routes>
         </main>
       </div>

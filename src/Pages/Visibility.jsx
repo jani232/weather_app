@@ -1,52 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { getWeather } from "../api/weatherApi";
 import {
-  FaWind,
+  FaEye,
   FaSearch,
   FaMapMarkerAlt
 } from "react-icons/fa";
 
 
-
-export default function Wind() {
-
-
-//Because OpenWeather doesn't automatically give us:
-//"Here are the cities with the highest wind speeds in Sri Lanka."
-//We need to ask for the weather of several cities ourselves
-
-const sriLankanCities = [
-  "Colombo",
-  "Gampaha",
-  "Kalutara",
-  "Kandy",
-  "Matale",
-  "Nuwara Eliya",
-  "Galle",
-  "Matara",
-  "Hambantota",
-  "Jaffna",
-  "Kilinochchi",
-  "Mannar",
-  "Mullaitivu",
-  "Vavuniya",
-  "Batticaloa",
-  "Ampara",
-  "Trincomalee",
-  "Kurunegala",
-  "Puttalam",
-  "Anuradhapura",
-  "Polonnaruwa",
-  "Badulla",
-  "Monaragala",
-  "Ratnapura",
-  "Kegalle"
-];
+export default function Visibility() {
 
 
-  // Highest and lowest wind speed cities
-  const [highestWindCities, setHighestWindCities] = useState([]);
-  const [lowestWindCities, setLowestWindCities] = useState([]);
+  // Sri Lankan cities
+  const sriLankanCities = [
+    "Colombo",
+    "Gampaha",
+    "Kalutara",
+    "Kandy",
+    "Matale",
+    "Nuwara Eliya",
+    "Galle",
+    "Matara",
+    "Hambantota",
+    "Jaffna",
+    "Kilinochchi",
+    "Mannar",
+    "Mullaitivu",
+    "Vavuniya",
+    "Batticaloa",
+    "Ampara",
+    "Trincomalee",
+    "Kurunegala",
+    "Puttalam",
+    "Anuradhapura",
+    "Polonnaruwa",
+    "Badulla",
+    "Monaragala",
+    "Ratnapura",
+    "Kegalle"
+  ];
+
+
+  // Highest and lowest visibility cities
+  const [highestCities, setHighestCities] = useState([]);
+  const [lowestCities, setLowestCities] = useState([]);
 
 
   // Search input
@@ -57,14 +53,18 @@ const sriLankanCities = [
   const [searchCity, setSearchCity] = useState("");
 
 
-  // Search wind weather
-  const [wind, setWind] = useState(null);
+  // Search visibility
+  const [visibility, setVisibility] = useState(null);
 
 
 
-useEffect(() => {
+  // =========================================
+  // GET VISIBILITY FOR ALL SRI LANKAN CITIES
+  // =========================================
 
-    const fetchWindByCity = async () => {
+  useEffect(() => {
+
+    const fetchVisibilityByCity = async () => {
 
       try {
 
@@ -77,25 +77,40 @@ useEffect(() => {
 
               const data = await getWeather(city);
 
+
               // Check if city was found
               if (data.cod !== 200) {
 
                 console.log("Could not find:", city);
 
                 return null;
+
               }
 
 
+              // OpenWeather gives visibility in meters
+              // Convert meters to kilometers
+              const visibilityKm =
+                data.visibility / 1000;
+
+
               return {
+
                 city: city,
-                speed: data.wind.speed
+
+                visibility: visibilityKm
+
               };
 
             } catch (error) {
 
-              console.log("Error getting weather for:", city);
+              console.log(
+                "Error getting weather for:",
+                city
+              );
 
               return null;
+
             }
 
           })
@@ -109,51 +124,64 @@ useEffect(() => {
         );
 
 
-        // Highest wind speeds
+        // Highest visibility
         const highest = [...weatherList]
-          .sort((a, b) => b.speed - a.speed)
+          .sort(
+            (a, b) =>
+              b.visibility - a.visibility
+          )
           .slice(0, 3);
 
 
-        // Lowest wind speeds
+        // Lowest visibility
         const lowest = [...weatherList]
-          .sort((a, b) => a.speed - b.speed)
+          .sort(
+            (a, b) =>
+              a.visibility - b.visibility
+          )
           .slice(0, 3);
 
 
         // Save results
-        setHighestWindCities(highest);
-        setLowestWindCities(lowest);
+        setHighestCities(highest);
+        setLowestCities(lowest);
+
 
       } catch (error) {
 
-        console.log("Error getting Sri Lankan wind:", error);
+        console.log(
+          "Error getting Sri Lankan visibility:",
+          error
+        );
 
       }
 
     };
 
-    fetchWindByCity();
+
+    fetchVisibilityByCity();
 
 
-}, []);   // use [] because we want to get the Sri Lankan wind speeds
-            // when the page loads. We don't want to repeatedly
-            // request all 25 cities every time the user types something.
-
-
+  }, []);
 
 
 
+  // =========================================
+  // SEARCH VISIBILITY
+  // =========================================
 
-useEffect(() => {
+  useEffect(() => {
+
 
     // Don't search if nothing has been searched
     if (searchCity.trim() === "") {
+
       return;
+
     }
 
 
-    const fetchWind = async () => {
+    const fetchVisibility = async () => {
 
       try {
 
@@ -163,61 +191,75 @@ useEffect(() => {
         // City not found
         if (data.cod !== 200) {
 
-          console.log("City not found:", searchCity);
+          console.log(
+            "City not found:",
+            searchCity
+          );
 
-          setWind(null);
+          setVisibility(null);
 
           return;
+
         }
 
 
-        // Current wind information
-        setWind({
-          speed: data.wind.speed,
-          degree: data.wind.deg,
-          gust: data.wind.gust
-        });
+        // Convert meters to kilometers
+        const visibilityKm =
+          data.visibility / 1000;
+
+
+        // Save visibility
+        setVisibility(visibilityKm);
 
 
       } catch (error) {
 
-        console.log("Error getting wind:", error);
+        console.log(
+          "Error getting visibility:",
+          error
+        );
 
-        setWind(null);
+        setVisibility(null);
 
       }
 
     };
 
 
-    fetchWind();
+    fetchVisibility();
 
 
-}, [searchCity]);
+  }, [searchCity]);
 
 
 
-return (
+  return (
 
     <div className="temperature-page">
 
 
-      {/* PAGE HEADER */}
+      {/* =========================================
+          PAGE HEADER
+      ========================================= */}
 
       <div className="temperature-header">
 
         <div>
 
-          <h1>Wind Overview</h1>
+          <h1>
+            Visibility Overview
+          </h1>
 
-          <p>Current wind conditions across Sri Lanka</p>
+          <p>
+            Current visibility across Sri Lanka
+          </p>
 
         </div>
 
 
         <div className="temperature-header-icon">
 
-          <FaWind />
+          <FaEye />
 
         </div>
 
@@ -225,35 +267,41 @@ return (
 
 
 
-      {/* =========================
-          HIGHEST AND LOWEST WIND
-      ========================== */}
+      {/* =========================================
+          HIGHEST AND LOWEST VISIBILITY
+      ========================================= */}
 
       <div className="temperature-cards">
 
 
-        {/* =========================
-            HIGHEST WIND CITIES
-        ========================== */}
+        {/* =========================================
+            HIGHEST VISIBILITY
+        ========================================= */}
 
         <div className="temperature-card hottest-card">
 
+
           <div className="temperature-card-header">
+
 
             <div>
 
               <span className="temperature-icon hot-icon">
 
-                <FaWind />
+                <FaEye />
 
               </span>
 
 
               <div>
 
-                <h2>Highest Wind Speed</h2>
+                <h2>
+                  Highest Visibility
+                </h2>
 
-                <p>Strongest winds</p>
+                <p>
+                  Clearest conditions
+                </p>
 
               </div>
 
@@ -266,20 +314,24 @@ return (
 
             </span>
 
+
           </div>
 
 
 
           <div className="city-list">
 
-            {highestWindCities.map((city, index) => (
+
+            {highestCities.map((city, index) => (
 
               <div
                 className="city-temperature-item"
                 key={city.city}
               >
 
+
                 <div className="city-info">
+
 
                   <span className="city-rank">
 
@@ -293,48 +345,58 @@ return (
                     {city.city}
 
                   </span>
+
 
                 </div>
 
 
                 <span className="city-temp hot-temp">
 
-                  {city.speed} m/s
+                  {city.visibility.toFixed(1)} km
 
                 </span>
+
 
               </div>
 
             ))}
 
+
           </div>
+
 
         </div>
 
 
 
-        {/* =========================
-            LOWEST WIND CITIES
-        ========================== */}
+        {/* =========================================
+            LOWEST VISIBILITY
+        ========================================= */}
 
         <div className="temperature-card coldest-card">
 
+
           <div className="temperature-card-header">
+
 
             <div>
 
               <span className="temperature-icon cold-icon">
 
-                <FaWind />
+                <FaEye />
 
               </span>
 
 
               <div>
 
-                <h2>Lowest Wind Speed</h2>
+                <h2>
+                  Lowest Visibility
+                </h2>
 
-                <p>Weakest winds</p>
+                <p>
+                  Reduced visibility
+                </p>
 
               </div>
 
@@ -347,20 +409,24 @@ return (
 
             </span>
 
+
           </div>
 
 
 
           <div className="city-list">
 
-            {lowestWindCities.map((city, index) => (
+
+            {lowestCities.map((city, index) => (
 
               <div
                 className="city-temperature-item"
                 key={city.city}
               >
 
+
                 <div className="city-info">
+
 
                   <span className="city-rank">
 
@@ -375,20 +441,24 @@ return (
 
                   </span>
 
+
                 </div>
 
 
                 <span className="city-temp cold-temp">
 
-                  {city.speed} m/s
+                  {city.visibility.toFixed(1)} km
 
                 </span>
+
 
               </div>
 
             ))}
 
+
           </div>
+
 
         </div>
 
@@ -397,14 +467,15 @@ return (
 
 
 
-      {/* =========================
+      {/* =========================================
           SEARCH
-      ========================== */}
+      ========================================= */}
 
       <div className="temperature-search-card">
 
 
         <div className="search-title">
+
 
           <div className="search-title-icon">
 
@@ -415,11 +486,16 @@ return (
 
           <div>
 
-            <h2>Search Wind</h2>
+            <h2>
+              Search Visibility
+            </h2>
 
-            <p>Check the current wind conditions of a city</p>
+            <p>
+              Check the current visibility of a city
+            </p>
 
           </div>
+
 
         </div>
 
@@ -441,7 +517,9 @@ return (
 
               value={location}
 
-              onChange={(e) => setLocation(e.target.value)}
+              onChange={(e) =>
+                setLocation(e.target.value)
+              }
 
             />
 
@@ -453,7 +531,9 @@ return (
 
             className="search-button"
 
-            onClick={() => setSearchCity(location)}
+            onClick={() =>
+              setSearchCity(location)
+            }
 
           >
 
@@ -468,23 +548,27 @@ return (
 
 
 
-        {/* =========================
+        {/* =========================================
             SEARCH RESULT
-        ========================== */}
+        ========================================= */}
 
         {searchCity !== "" && (
+
 
           <div className="search-result">
 
 
             <div className="result-location">
 
+
               <FaMapMarkerAlt />
 
 
               <div>
 
-                <span>Location</span>
+                <span>
+                  Location
+                </span>
 
                 <h3>
 
@@ -494,73 +578,47 @@ return (
 
               </div>
 
+
             </div>
 
 
 
-            {wind !== null ? (
-
-              <div className="wind-result-values">
+            {visibility !== null ? (
 
 
-                <div className="wind-value">
-
-                  <span>Wind Speed</span>
-
-                  <strong>
-
-                    {wind.speed} m/s
-
-                  </strong>
-
-                </div>
+              <div className="result-temperature">
 
 
-
-                <div className="wind-value">
-
-                  <span>Direction</span>
-
-                  <strong>
-
-                    {wind.degree}°
-
-                  </strong>
-
-                </div>
+                <span>
+                  Current Visibility
+                </span>
 
 
+                <strong>
 
-                <div className="wind-value">
+                  {visibility.toFixed(1)} km
 
-                  <span>Gust</span>
-
-                  <strong>
-
-                    {wind.gust !== undefined
-                      ? `${wind.gust} m/s`
-                      : "N/A"
-                    }
-
-                  </strong>
-
-                </div>
+                </strong>
 
 
               </div>
 
+
             ) : (
+
 
               <p className="weather-not-found">
 
-                Wind information not found.
+                Weather information not found.
 
               </p>
+
 
             )}
 
 
           </div>
+
 
         )}
 

@@ -8,14 +8,15 @@ const BASE_URL =
 
 export const getWeather = async (city) => {
 
-    const response = await fetch(
-      `${BASE_URL}/weather?q=${city}&appid=${API_KEY}&units=metric`
-    );
+  const response = await fetch(
+    `${BASE_URL}/weather?q=${city}&appid=${API_KEY}&units=metric`
+  );
 
+  const data = await response.json();
 
-    const data = await response.json();
+  console.log("API RESPONSE:", data);
 
-    return data;
+  return data;
 };
 
 

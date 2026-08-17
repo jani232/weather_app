@@ -4,6 +4,7 @@ import { FaCloudSun, FaThLarge, FaChartLine, FaMapPin, FaBell, FaUser, FaCog} fr
 import { CiTempHigh } from "react-icons/ci";
 import { LuWind } from "react-icons/lu";
 import { WiHumidity } from "react-icons/wi";
+import { MdOutlineVisibility } from "react-icons/md";
 
 
 import {Link} from 'react-router-dom'
@@ -21,8 +22,9 @@ const Sidebar = () => {
         <Link to="/Tempeture"><CiTempHigh /></Link>
         <Link to="/Wind"><LuWind /></Link>
         <Link to="/Humidity"><WiHumidity /></Link>
-        <a href="#"><FaChartLine /></a>
-        <a href="#"><FaUser /></a>
+        <Link to="/Visibility"><MdOutlineVisibility /></Link>
+
+
       </div>
     </aside>
   );
