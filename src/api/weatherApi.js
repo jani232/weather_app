@@ -32,3 +32,18 @@ export const getWeatherByLocation = async (lat, lon) => {
     return data;
 };
 
+// =========================================
+// GET 5 DAY / 3 HOUR FORECAST
+// =========================================
+
+export const getForecast = async (city) => {
+
+  const response = await fetch(
+    `${BASE_URL}/forecast?q=${city}&appid=${API_KEY}&units=metric`
+  );
+
+  const data = await response.json();
+
+  return data;
+};
+

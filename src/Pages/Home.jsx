@@ -1,5 +1,5 @@
 // Home.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   FaWind,
   FaLocationArrow,
@@ -8,125 +8,427 @@ import {
   FaCalendarWeek,
   FaMapMarkedAlt,
   FaCloudSun,
-  FaMapMarkerAlt ,
+  FaMapMarkerAlt,
   FaChevronRight,
-  FaCloudRain,
-  FaChurch,
-  FaFlagCheckered,
   FaRegClock,
-  FaChevronCircleRight,
   FaCloudShowersHeavy,
-  FaTree,
-  FaCity
+  FaTachometerAlt
 } from 'react-icons/fa';
 
+import { Link } from 'react-router-dom';
+import { getWeather } from "../api/weatherApi";
+
+
 const Home = () => {
+
+  // Store weather data
+  const [weather, setWeather] = useState(null);
+
+
+  // Get weather when Home page loads
+  useEffect(() => {
+
+    const fetchWeather = async () => {
+
+      try {
+
+        // You can change Colombo to another default location
+        const data = await getWeather("Colombo");
+
+        if (data.cod === 200) {
+
+          setWeather(data);
+
+        }
+
+      } catch (error) {
+
+        console.log("Error getting weather:", error);
+
+      }
+
+    };
+
+    fetchWeather();
+
+  }, []);
+
+
+  // Show loading while API is responding
+  if (!weather) {
+
+    return (
+      <div className="card">
+        <p>Loading weather...</p>
+      </div>
+    );
+
+  }
+
+
   return (
+
     <div className="card">
-      {/* Header with Weatherry brand */}
 
- 
- <div className="weather-layout">
-      {/* top: location & time + weather condition */}
-      <div className="top-bar">
-        <div className="location">
-          <h1>Florida, US</h1>
-          <div className="date-time">
-            <span><FaRegClock /> 5:01 AM</span>
+      <div className="weather-layout">
+
+
+        {/* =========================
+            LOCATION + TEMPERATURE
+        ========================== */}
+
+        <div className="top-bar">
+
+          <div className="location">
+
+            <h1>
+              {weather.name}, Sri Lanka
+            </h1>
+
+            <div className="date-time">
+
+              <span>
+                <FaRegClock /> Current Weather
+              </span>
+
+            </div>
+
           </div>
-        </div>
-        <div className="weather-condition">
-          <div className="temp-large">28°C</div>
-          <div className="condition-tag">
-            <FaCloudShowersHeavy /> Rainy Storm Clouds
+
+
+          <div className="weather-condition">
+
+            <div className="temp-large">
+              {Math.round(weather.main.temp)}°C
+            </div>
+
+            <div className="condition-tag">
+
+              <FaCloudShowersHeavy />
+
+              {weather.weather[0].description}
+
+            </div>
+
           </div>
+
         </div>
+
+
+
+        {/* =========================
+            TODAY'S HIGHLIGHTS
+        ========================== */}
+
+        <div className="highlights">
+
+          <div className="header-brand">
+
+            <span className="update-badge">
+              Today's Highlights
+            </span>
+
+          </div>
+
+
+          <div className="highlight-grid">
+
+
+            {/* WIND */}
+
+            <div className="highlight-item">
+
+              <div className="label">
+                Wind Status
+              </div>
+
+              <div className="value">
+
+                <FaLocationArrow />
+
+                {(weather.wind.speed * 3.6).toFixed(1)}
+
+                <span className="unit">
+                  km/h
+                </span>
+
+              </div>
+
+              <div className="sub">
+
+                Direction: {weather.wind.deg}°
+
+              </div>
+
+            </div>
+
+
+
+            {/* PRESSURE */}
+
+            <div className="highlight-item">
+
+              <div className="label">
+                Pressure
+              </div>
+
+              <div className="value">
+
+                <FaTachometerAlt />
+
+                {weather.main.pressure}
+
+                <span className="unit">
+                  hPa
+                </span>
+
+              </div>
+
+              <div className="sub">
+                Atmospheric pressure
+              </div>
+
+            </div>
+
+
+
+            {/* HUMIDITY */}
+
+            <div className="highlight-item">
+
+              <div className="label">
+                Humidity
+              </div>
+
+              <div className="value">
+
+                <FaTint />
+
+                {weather.main.humidity}%
+
+              </div>
+
+              <div className="sub">
+                Relative humidity
+              </div>
+
+            </div>
+
+
+
+            {/* VISIBILITY */}
+
+            <div className="highlight-item">
+
+              <div className="label">
+                Visibility
+              </div>
+
+              <div className="value">
+
+                <FaEye />
+
+                {(weather.visibility / 1000).toFixed(1)}
+
+                <span className="unit">
+                  km
+                </span>
+
+              </div>
+
+              <div className="sub">
+                Viewing distance
+              </div>
+
+            </div>
+
+
+          </div>
+
+        </div>
+
       </div>
 
-      {/* highlights: wind, uv, humidity, visibility */}
-<div className="highlights">
 
-  <div className="header-brand">
-    <span className="update-badge">Today's Highlight</span>
-  </div>
 
-  <div className="highlight-grid">
+      {/* =========================
+          7 DAY FORECAST + MAP
+      ========================== */}
 
-    <div className="highlight-item">
-      <div className="label">Wind Status</div>
-      <div className="value">
-        <FaLocationArrow /> 7.90 
-        <span className="unit">km/h</span>
-      </div>
-      <div className="sub">5:01 AM</div>
-    </div>
-
-    <div className="highlight-item">
-      <div className="label">UV Index</div>
-      <div className="value">5.50</div>
-      <div className="uv-scale">
-        <span className="active"></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-
-    <div className="highlight-item">
-      <div className="label">Humidity</div>
-      <div className="value">
-        <FaTint /> 84%
-      </div>
-    </div>
-
-    <div className="highlight-item">
-      <div className="label">Visibility</div>
-      <div className="value">
-        <FaEye /> 03 
-        <span className="unit">km</span>
-      </div>
-      <div className="sub">5:01 AM</div>
-    </div>
-
-  </div>
-
-</div>
-      </div>
-
-      {/* middle: 7days forecast + map */}
       <div className="middle-section">
+
+
+        {/* FORECAST */}
+
         <div className="forecast">
+
           <div className="forecast-title">
-            <span><FaCalendarWeek /> 7 days Forecast</span>
-            <span style={{fontSize: '0.95rem' }}>▼</span>
+
+            <span>
+              <FaCalendarWeek />
+              7 Days Forecast
+            </span>
+
+            <span style={{ fontSize: '0.95rem' }}>
+              ▼
+            </span>
+
           </div>
+
+
           <div className="forecast-days">
-            <div className="day-row"><span className="day">7 day</span><span className="temps"><span className="high">+29°</span><span className="low">/18°</span></span></div>
-            <div className="day-row"><span className="day">Everglades</span><span className="temps"><span className="high">+21°</span><span className="low">/16°</span></span></div>
-            <div className="day-row"><span className="day">Headwaters Wildlife...</span><span className="temps"><span className="high">+24°</span><span className="low">/20°</span></span></div>
-            <div className="day-row"><span className="day">Avon Park</span><span className="temps"><span className="high">+30°</span><span className="low">/17°</span></span></div>
+
+            <div className="day-row">
+
+              <span className="day">
+                Today
+              </span>
+
+              <span className="temps">
+
+                <span className="high">
+                  +29°
+                </span>
+
+                <span className="low">
+                  /22°
+                </span>
+
+              </span>
+
+            </div>
+
+
+            <div className="day-row">
+
+              <span className="day">
+                Tomorrow
+              </span>
+
+              <span className="temps">
+
+                <span className="high">
+                  +30°
+                </span>
+
+                <span className="low">
+                  /22°
+                </span>
+
+              </span>
+
+            </div>
+
+
+            <div className="day-row">
+
+              <span className="day">
+                Wednesday
+              </span>
+
+              <span className="temps">
+
+                <span className="high">
+                  +30°
+                </span>
+
+                <span className="low">
+                  /22°
+                </span>
+
+              </span>
+
+            </div>
+
+
+            <div className="day-row">
+
+              <span className="day">
+                Thursday
+              </span>
+
+              <span className="temps">
+
+                <span className="high">
+                  +29°
+                </span>
+
+                <span className="low">
+                  /22°
+                </span>
+
+              </span>
+
+            </div>
+
           </div>
+
         </div>
 
-        <div className="map-card">
-          <div className="map-label"><FaMapMarkedAlt /> Weather condition map</div>
+
+
+        {/* =========================
+            WEATHER MAP
+        ========================== */}
+
+        <Link
+          to="/Map"
+          className="map-card"
+          style={{ textDecoration: "none" }}
+        >
+
+          <div className="map-label">
+
+            <FaMapMarkedAlt />
+
+            Weather Condition Map
+
+          </div>
+
+
           <div className="map-placeholder">
-            <FaCloudSun /> <span>Florida</span>
+
+            <FaCloudSun />
+
+            <span>
+              Explore Weather Map
+            </span>
+
           </div>
+
+
           <div className="map-footer">
-            <span><FaMapMarkerAlt  /> Alpine</span>
-            <span className="view-more"><FaChevronRight /> View More</span>
+
+            <span>
+
+              <FaMapMarkerAlt />
+
+              Sri Lanka
+
+            </span>
+
+
+            <span className="view-more">
+
+              <FaChevronRight />
+
+              View More
+
+            </span>
+
           </div>
-        </div>
+
+        </Link>
+
+
       </div>
 
 
-
     </div>
+
   );
+
 };
+
 
 export default Home;
