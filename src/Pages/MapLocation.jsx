@@ -3,8 +3,8 @@
 import React, { useState,useRef } from "react";
 
 import {
-  MapContainer,
-  TileLayer,
+  MapContainer,  //creates the actual map
+  TileLayer, //Provides the map's visual tiles
   Marker,
   Popup,
   useMapEvents
@@ -15,7 +15,7 @@ import "leaflet/dist/leaflet.css";
 import { getWeatherByLocation } from "../api/weatherApi";
 
 
-
+//useRef gives reference to Leaflet marker. for an example open some popup to specific marker
 function LocationMarker() {
 const markerRef = useRef(null);
   const [position, setPosition] = useState(null);

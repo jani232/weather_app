@@ -9,6 +9,10 @@ import MapLocation from "./Pages/MapLocation";
 //for the map
 import "leaflet/dist/leaflet.css";
 
+import Tempeture from "./Pages/Tempeture";
+import Wind from "./Pages/Wind";
+import Humidity from "./Pages/Humidity";
+
 const App = () => {
   return (
     <Router>
@@ -19,6 +23,9 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/Map" element={<MapLocation />} />
+            <Route path="/Tempeture" element={<Tempeture/>} />
+            <Route path="/Wind" element={<Wind/>} />
+            <Route path="/Humidity" element={<Humidity/>} />
           </Routes>
         </main>
       </div>

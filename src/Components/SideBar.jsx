@@ -1,6 +1,11 @@
 // Sidebar.jsx
 import React from 'react';
-import { FaCloudSun, FaThLarge, FaChartLine, FaMapPin, FaBell, FaUser, FaCog } from 'react-icons/fa';
+import { FaCloudSun, FaThLarge, FaChartLine, FaMapPin, FaBell, FaUser, FaCog} from 'react-icons/fa';
+import { CiTempHigh } from "react-icons/ci";
+import { LuWind } from "react-icons/lu";
+import { WiHumidity } from "react-icons/wi";
+
+
 import {Link} from 'react-router-dom'
 
 const Sidebar = () => {
@@ -12,9 +17,11 @@ const Sidebar = () => {
       <div className="nav-icons">
              
         <Link to="/"><FaThLarge /></Link>
-        <a href="#"><FaChartLine /></a>
         <Link to="/Map"><FaMapPin /></Link>
-        <a href="#"><FaBell /></a>
+        <Link to="/Tempeture"><CiTempHigh /></Link>
+        <Link to="/Wind"><LuWind /></Link>
+        <Link to="/Humidity"><WiHumidity /></Link>
+        <a href="#"><FaChartLine /></a>
         <a href="#"><FaUser /></a>
       </div>
     </aside>

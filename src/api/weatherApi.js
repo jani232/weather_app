@@ -30,3 +30,4 @@ export const getWeatherByLocation = async (lat, lon) => {
     console.log("API RESPONSE:", data);
     return data;
 };
+
